@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Palawan Research Atlas — PSU</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green-dark: #1B5E20;
+    --green-mid: #2E7D32;
+    --green-light: #4CAF50;
+    --green-pale: #C8E6C9;
+    --green-bg: #F1F8E9;
+    --gold: #FFC107;
+    --gold-dark: #F57F17;
+    --white: #FFFFFF;
+    --off-white: #FAFAF7;
+    --text-dark: #1A2215;
+    --text-mid: #3E4A35;
+    --text-muted: #6B7B62;
+    --border: #D8E8D0;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--off-white);
+    color: var(--text-dark);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(27,94,32,0.97);
+    backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px; height: 64px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .nav-logo {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--gold); display: flex; align-items: center; justify-content: center;
+  }
+  .nav-logo svg { width: 24px; height: 24px; }
+  .nav-name { color: white; font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; }
+  .nav-links { display: flex; gap: 4px; }
+  .nav-links a {
+    color: rgba(255,255,255,0.8); font-size: 14px; font-weight: 400;
+    text-decoration: none; padding: 8px 16px; border-radius: 6px;
+    transition: background 0.2s, color 0.2s;
+  }
+  .nav-links a:hover { background: rgba(255,255,255,0.12); color: white; }
+  .nav-cta {
+    background: var(--gold); color: var(--green-dark) !important;
+    font-weight: 600 !important; border-radius: 8px !important;
+  }
+  .nav-cta:hover { background: var(--gold-dark) !important; color: white !important; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    background: linear-gradient(160deg, var(--green-dark) 0%, #2E7D32 50%, #1B5E20 100%);
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center; padding: 120px 40px 80px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle at 20% 30%, rgba(255,193,7,0.08) 0%, transparent 60%),
+                      radial-gradient(circle at 80% 70%, rgba(200,230,201,0.06) 0%, transparent 50%);
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,193,7,0.15); border: 1px solid rgba(255,193,7,0.35);
+    color: var(--gold); font-size: 13px; font-weight: 500;
+    padding: 6px 16px; border-radius: 20px; margin-bottom: 28px;
+    letter-spacing: 0.5px;
+  }
+  .hero-badge span { width: 6px; height: 6px; background: var(--gold); border-radius: 50%; }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 900; color: white;
+    line-height: 1.1; margin-bottom: 8px;
+    position: relative;
+  }
+  .hero h1 em { color: var(--gold); font-style: normal; }
+  .hero-sub {
+    font-size: clamp(13px, 2vw, 16px); color: rgba(255,255,255,0.65);
+    font-weight: 400; letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .hero p {
+    max-width: 600px; font-size: 17px; color: rgba(255,255,255,0.8);
+    line-height: 1.75; margin-bottom: 40px;
+  }
+  .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+  .btn-gold {
+    background: var(--gold); color: var(--green-dark);
+    font-size: 15px; font-weight: 600; padding: 14px 32px;
+    border-radius: 10px; border: none; cursor: pointer; text-decoration: none;
+    transition: transform 0.2s, background 0.2s;
+    display: inline-block;
+  }
+  .btn-gold:hover { background: var(--gold-dark); color: white; transform: translateY(-2px); }
+  .btn-outline {
+    background: transparent; color: white;
+    font-size: 15px; font-weight: 500; padding: 13px 32px;
+    border-radius: 10px; border: 1.5px solid rgba(255,255,255,0.4);
+    cursor: pointer; text-decoration: none; transition: border-color 0.2s, background 0.2s;
+    display: inline-block;
+  }
+  .btn-outline:hover { border-color: white; background: rgba(255,255,255,0.08); }
+
+  .hero-stats {
+    display: flex; gap: 48px; margin-top: 64px;
+    border-top: 1px solid rgba(255,255,255,0.12); padding-top: 40px;
+    flex-wrap: wrap; justify-content: center;
+  }
+  .hero-stat { text-align: center; }
+  .hero-stat-num { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: var(--gold); }
+  .hero-stat-label { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 4px; }
+
+  /* ── SECTIONS GENERAL ── */
+  section { padding: 80px 40px; }
+  .section-label {
+    font-size: 12px; font-weight: 600; color: var(--green-mid);
+    text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4vw, 42px); font-weight: 700;
+    color: var(--text-dark); line-height: 1.2; margin-bottom: 16px;
+  }
+  .section-desc { font-size: 16px; color: var(--text-muted); line-height: 1.75; max-width: 560px; }
+  .center { text-align: center; }
+  .center .section-desc { margin: 0 auto; }
+
+  /* ── FEATURES ── */
+  #features { background: white; }
+  .features-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px; margin-top: 52px; max-width: 1100px; margin-left: auto; margin-right: auto;
+  }
+  .feature-card {
+    background: var(--off-white); border: 1px solid var(--border);
+    border-radius: 16px; padding: 28px 24px;
+    transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+  }
+  .feature-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(27,94,32,0.12); border-color: var(--green-pale); }
+  .feature-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    background: var(--green-bg); display: flex; align-items: center; justify-content: center;
+    margin-bottom: 18px;
+  }
+  .feature-icon svg { width: 26px; height: 26px; stroke: var(--green-mid); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .feature-card h3 { font-size: 17px; font-weight: 600; color: var(--text-dark); margin-bottom: 10px; }
+  .feature-card p { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+
+  /* ── AI CLASSIFIER ── */
+  #classifier { background: var(--green-bg); }
+  .classifier-inner {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start;
+  }
+  .classifier-left { padding-top: 8px; }
+  .classifier-left .section-title { margin-bottom: 20px; }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+  .chip {
+    font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 20px;
+    border: 1px solid var(--border); background: white; color: var(--text-mid);
+  }
+  .chip.active { background: var(--green-mid); color: white; border-color: var(--green-mid); }
+
+  .classifier-panel {
+    background: white; border-radius: 20px; border: 1px solid var(--border);
+    overflow: hidden; box-shadow: 0 4px 32px rgba(27,94,32,0.08);
+  }
+  .panel-tabs { display: flex; border-bottom: 1px solid var(--border); }
+  .ptab {
+    flex: 1; padding: 14px; font-size: 13px; font-weight: 500; text-align: center;
+    cursor: pointer; color: var(--text-muted); background: none; border: none;
+    font-family: 'DM Sans', sans-serif; transition: color 0.2s, background 0.2s;
+    border-bottom: 2px solid transparent;
+  }
+  .ptab.active { color: var(--green-mid); border-bottom-color: var(--green-mid); background: var(--green-bg); }
+  .panel-body { padding: 24px; }
+  .panel-body label { font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 6px; }
+  .panel-body input, .panel-body textarea {
+    width: 100%; font-size: 14px; padding: 10px 12px;
+    border: 1px solid var(--border); border-radius: 10px;
+    background: var(--off-white); color: var(--text-dark);
+    font-family: 'DM Sans', sans-serif; margin-bottom: 14px;
+    outline: none; transition: border-color 0.2s;
+  }
+  .panel-body input:focus, .panel-body textarea:focus { border-color: var(--green-light); }
+  .panel-body textarea { min-height: 90px; resize: vertical; }
+  .result-area { margin-top: 4px; }
+  .result-badge {
+    display: inline-block; font-size: 12px; font-weight: 600; padding: 4px 12px;
+    border-radius: 12px; background: var(--green-bg); color: var(--green-dark); margin-bottom: 10px;
+  }
+  .conf-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .conf-label { font-size: 12px; color: var(--text-muted); width: 80px; }
+  .conf-track { flex: 1; height: 8px; background: var(--green-bg); border-radius: 4px; overflow: hidden; }
+  .conf-fill { height: 100%; background: var(--green-mid); border-radius: 4px; transition: width 0.6s ease; }
+  .conf-pct { font-size: 12px; font-weight: 600; color: var(--green-mid); width: 36px; text-align: right; }
+  .kw-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .kw { font-size: 12px; background: var(--off-white); border: 1px solid var(--border); color: var(--text-muted); padding: 3px 10px; border-radius: 8px; }
+  .rationale-text { font-size: 13px; color: var(--text-muted); line-height: 1.65; margin-bottom: 12px; }
+  .loading-row { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text-muted); padding: 20px 0; }
+  .spin { width: 18px; height: 18px; border: 2px solid var(--green-pale); border-top-color: var(--green-mid); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── CAMPUSES ── */
+  #campuses { background: white; }
+  .campuses-inner { max-width: 1100px; margin: 0 auto; }
+  .campus-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px; margin-top: 48px;
+  }
+  .campus-card {
+    border: 1px solid var(--border); border-radius: 14px; padding: 20px 16px;
+    background: var(--off-white); text-align: center;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .campus-card:hover { transform: translateY(-3px); border-color: var(--green-pale); }
+  .campus-num {
+    font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700;
+    color: var(--green-mid); margin-bottom: 4px;
+  }
+  .campus-name { font-size: 14px; font-weight: 500; color: var(--text-dark); margin-bottom: 4px; }
+  .campus-count { font-size: 12px; color: var(--text-muted); }
+
+  /* ── GAP ANALYSIS ── */
+  #gaps { background: var(--green-dark); }
+  #gaps .section-label { color: var(--gold); }
+  #gaps .section-title { color: white; }
+  #gaps .section-desc { color: rgba(255,255,255,0.65); }
+  .gaps-inner { max-width: 1100px; margin: 0 auto; }
+  .gaps-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 52px; align-items: start; }
+  .gap-list { display: flex; flex-direction: column; gap: 14px; }
+  .gap-item { }
+  .gap-item-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .gap-item-label { font-size: 14px; color: white; font-weight: 500; }
+  .gap-item-pct { font-size: 13px; color: var(--gold); font-weight: 600; }
+  .gap-track { height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden; }
+  .gap-fill { height: 100%; border-radius: 5px; }
+  .gap-status { font-size: 11px; margin-top: 4px; font-weight: 500; }
+  .status-recurring { color: #A5D6A7; }
+  .status-emerging { color: var(--gold); }
+  .status-gap { color: #EF9A9A; }
+
+  .gap-summary-cards { display: flex; flex-direction: column; gap: 14px; }
+  .gap-sum-card {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px; padding: 20px;
+  }
+  .gap-sum-card h4 { font-size: 14px; font-weight: 600; color: white; margin-bottom: 6px; }
+  .gap-sum-card p { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.65; }
+  .gap-sum-num { font-family: 'Playfair Display', serif; font-size: 32px; color: var(--gold); font-weight: 700; margin-bottom: 2px; }
+
+  /* ── PROGRAMS ── */
+  #programs { background: var(--off-white); }
+  .programs-inner { max-width: 1100px; margin: 0 auto; }
+  .prog-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px; margin-top: 48px;
+  }
+  .prog-card {
+    background: white; border: 1px solid var(--border); border-radius: 16px;
+    padding: 22px 18px; transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .prog-card:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(27,94,32,0.09); }
+  .prog-abbr {
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    color: var(--green-mid); background: var(--green-bg); padding: 3px 10px;
+    border-radius: 6px; margin-bottom: 12px;
+  }
+  .prog-card h3 { font-size: 14px; font-weight: 600; color: var(--text-dark); margin-bottom: 8px; }
+  .prog-list { list-style: none; }
+  .prog-list li { font-size: 13px; color: var(--text-muted); padding: 2px 0; }
+  .prog-list li::before { content: '—  '; color: var(--green-pale); }
+
+  /* ── CONTACT ── */
+  #contact { background: white; }
+  .contact-inner {
+    max-width: 800px; margin: 0 auto;
+  }
+  .contact-form {
+    background: var(--off-white); border: 1px solid var(--border);
+    border-radius: 20px; padding: 36px; margin-top: 48px;
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group label { font-size: 13px; font-weight: 500; color: var(--text-mid); }
+  .form-group input, .form-group textarea, .form-group select {
+    font-size: 14px; padding: 11px 14px;
+    border: 1px solid var(--border); border-radius: 10px;
+    background: white; color: var(--text-dark);
+    font-family: 'DM Sans', sans-serif; outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--green-light); }
+  .form-group textarea { min-height: 100px; resize: vertical; }
+  .form-full { margin-bottom: 16px; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--green-dark); color: white; padding: 48px 40px 28px;
+  }
+  .footer-inner { max-width: 1100px; margin: 0 auto; }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+  .footer-brand h2 { font-family: 'Playfair Display', serif; font-size: 20px; margin-bottom: 10px; }
+  .footer-brand p { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.7; max-width: 300px; }
+  .footer-col h4 { font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 14px; }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li { margin-bottom: 8px; }
+  .footer-col ul li a { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 14px; transition: color 0.2s; }
+  .footer-col ul li a:hover { color: var(--gold); }
+  .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: rgba(255,255,255,0.45); flex-wrap: wrap; gap: 8px; }
+
+  /* ── TABS PANEL ── */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    section { padding: 60px 20px; }
+    .classifier-inner, .gaps-grid, .footer-grid { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .hero { padding: 100px 24px 60px; }
+    .hero-stats { gap: 28px; }
+    footer { padding: 40px 20px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="#">
+    <div class="nav-logo">
+      <svg viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="9" fill="#1B5E20"/>
+        <path d="M12 4 Q16 8 12 12 Q8 8 12 4Z" fill="#A5D6A7"/>
+        <path d="M12 12 Q17 14 16 19 Q12 17 12 12Z" fill="#66BB6A"/>
+        <path d="M12 12 Q7 14 8 19 Q12 17 12 12Z" fill="#81C784"/>
+      </svg>
+    </div>
+    <span class="nav-name">Palawan Research Atlas</span>
+  </a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#classifier">AI Classifier</a>
+    <a href="#campuses">Campuses</a>
+    <a href="#gaps">Gap Analysis</a>
+    <a href="#programs">Programs</a>
+    <a href="#contact" class="nav-cta">Contact URO</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><span></span> Palawan State University — University Research Office</div>
+  <div class="hero-sub">Centralized GIS-Based Research Mapping System</div>
+  <h1>The Palawan<br><em>Research Atlas</em></h1>
+  <p>A centralized platform for organizing, visualizing, and analyzing faculty research outputs across all PSU campuses — powered by AI-assisted thematic classification and spatial gap analysis.</p>
+  <div class="hero-btns">
+    <a href="#classifier" class="btn-gold">Try AI Classifier</a>
+    <a href="#gaps" class="btn-outline">View Gap Analysis</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="hero-stat-num">348</div><div class="hero-stat-label">Research Outputs</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">9</div><div class="hero-stat-label">PSU Campuses</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">12</div><div class="hero-stat-label">Thematic Clusters</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">6</div><div class="hero-stat-label">Disciplines</div></div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div style="max-width:1100px; margin: 0 auto;">
+    <div class="center">
+      <div class="section-label">What It Does</div>
+      <div class="section-title">A smarter way to manage<br>PSU research</div>
+      <p class="section-desc">The Research Atlas addresses the difficulty of organizing and analyzing faculty research outputs across PSU campuses.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 7h18M3 12h18M3 17h12"/></svg>
+        </div>
+        <h3>Centralized Repository</h3>
+        <p>All faculty research metadata — titles, abstracts, campus, year, discipline — organized in one searchable platform.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 100 14A7 7 0 0012 2zm0 0v14M5.2 5.2l13.6 13.6M2 12h20M5.2 18.8L18.8 5.2"/></svg>
+        </div>
+        <h3>AI-Assisted Classification</h3>
+        <p>Automatically extracts and groups research themes from titles and abstracts using large language model classification.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M17.5 14v6M14 17.5h7"/></svg>
+        </div>
+        <h3>Thematic Gap Analysis</h3>
+        <p>Highlights recurring, emerging, and underrepresented research areas to support institutional research planning.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg>
+        </div>
+        <h3>Research Timeline</h3>
+        <p>Track research output trends over time and per campus to identify growth areas and stagnation across departments.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AI CLASSIFIER -->
+<section id="classifier">
+  <div class="classifier-inner">
+    <div class="classifier-left">
+      <div class="section-label">AI-Powered</div>
+      <div class="section-title">Instant theme classification</div>
+      <p class="section-desc">Paste any research title or abstract and the system will classify it into a PSU thematic cluster, extract keywords, and assess confidence — instantly.</p>
+      <div class="chip-row">
+        <span class="chip active">Environmental Science</span>
+        <span class="chip">Aquatic Sciences</span>
+        <span class="chip">Agriculture</span>
+        <span class="chip">Biodiversity</span>
+        <span class="chip">Health Sciences</span>
+        <span class="chip">Education</span>
+        <span class="chip">Indigenous Knowledge</span>
+        <span class="chip">Technology</span>
+      </div>
+    </div>
+    <div class="classifier-panel">
+      <div class="panel-tabs">
+        <button class="ptab active" onclick="switchPTab(this,'single')">Single Entry</button>
+        <button class="ptab" onclick="switchPTab(this,'batch')">Auto-classify Samples</button>
+      </div>
+      <div class="panel-body">
+
+        <div id="tab-single" class="tab-panel active">
+          <label>Research title *</label>
+          <input type="text" id="inp-title" placeholder="e.g. Mangrove Ecosystem Assessment in Honda Bay, Palawan" />
+          <label>Abstract (optional — improves accuracy)</label>
+          <textarea id="inp-abstract" placeholder="Paste the abstract here..."></textarea>
+          <button class="btn-gold" id="btn-single" onclick="classifySingle()" style="width:100%;font-size:14px;padding:12px;">Classify Research →</button>
+          <div id="result-single" class="result-area" style="margin-top:16px;"></div>
+        </div>
+
+        <div id="tab-batch" class="tab-panel">
+          <p style="font-size:14px;color:var(--text-muted);margin-bottom:16px;line-height:1.65;">Click below to auto-classify a set of sample PSU faculty research entries using AI thematic classification.</p>
+          <button class="btn-gold" id="btn-batch" onclick="autoClassify()" style="width:100%;font-size:14px;padding:12px;">Run Auto-Classification →</button>
+          <div id="result-batch" style="margin-top:16px;"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CAMPUSES -->
+<section id="campuses">
+  <div class="campuses-inner">
+    <div class="center" style="margin-bottom:0;">
+      <div class="section-label">Spatial Coverage</div>
+      <div class="section-title">Research across all PSU campuses</div>
+      <p class="section-desc" style="margin:0 auto;">The Atlas maps research output across every Palawan State University campus, enabling campus-level comparisons and gap identification.</p>
+    </div>
+    <div class="campus-grid">
+      <div class="campus-card"><div class="campus-num">86</div><div class="campus-name">Puerto Princesa</div><div class="campus-count">Main Campus</div></div>
+      <div class="campus-card"><div class="campus-num">47</div><div class="campus-name">Aborlan</div><div class="campus-count">Campus</div></div>
+      <div class="campus-card"><div class="campus-num">38</div><div class="campus-name">Brooke's Point</div><div class="campus-count">Campus</div></div>
+      <div class="campus-card"><div class="campus-num">22</div><div class="campus-name">Coron</div><div class="campus-count">Campus</div></div>
+      <div class="campus-card"><div class="campus-num">19</div><div class="campus-name">Cuyo</div><div class="campus-count">Campus</div></div>
+      <div class="campus-card"><div class="campus-num">41</div><div class="campus-name">Narra</div><div class="campus-count">Campus</div></div>
+      <div class="campus-card"><div class="campus-num">35</div><div class="campus-name">Quezon</div><div class="campus-count">Campus</div></div>
+      <div class="campus-card"><div class="campus-num">29</div><div class="campus-name">San Rafael</div><div class="campus-count">Campus</div></div>
+      <div class="campus-card"><div class="campus-num">31</div><div class="campus-name">Roxas</div><div class="campus-count">Campus</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- GAP ANALYSIS -->
+<section id="gaps">
+  <div class="gaps-inner">
+    <div class="section-label">Research Intelligence</div>
+    <div class="section-title">Thematic gap analysis</div>
+    <p class="section-desc">Identify which research areas are saturated, emerging, or critically underrepresented to guide PSU's institutional research agenda.</p>
+    <div class="gaps-grid">
+      <div class="gap-list">
+        <div class="gap-item">
+          <div class="gap-item-top"><span class="gap-item-label">Environmental Science</span><span class="gap-item-pct">88%</span></div>
+          <div class="gap-track"><div class="gap-fill" style="width:88%;background:#4CAF50;"></div></div>
+          <div class="gap-status status-recurring">● Recurring — dominant theme</div>
+        </div>
+        <div class="gap-item">
+          <div class="gap-item-top"><span class="gap-item-label">Aquatic Sciences</span><span class="gap-item-pct">75%</span></div>
+          <div class="gap-track"><div class="gap-fill" style="width:75%;background:#4CAF50;"></div></div>
+          <div class="gap-status status-recurring">● Recurring — well covered</div>
+        </div>
+        <div class="gap-item">
+          <div class="gap-item-top"><span class="gap-item-label">Agriculture</span><span class="gap-item-pct">62%</span></div>
+          <div class="gap-track"><div class="gap-fill" style="width:62%;background:#66BB6A;"></div></div>
+          <div class="gap-status status-recurring">● Recurring — moderate coverage</div>
+        </div>
+        <div class="gap-item">
+          <div class="gap-item-top"><span class="gap-item-label">Health Sciences</span><span class="gap-item-pct">38%</span></div>
+          <div class="gap-track"><div class="gap-fill" style="width:38%;background:#FFC107;"></div></div>
+          <div class="gap-status status-emerging">● Emerging — needs more studies</div>
+        </div>
+        <div class="gap-item">
+          <div class="gap-item-top"><span class="gap-item-label">Gender Studies</span><span class="gap-item-pct">12%</span></div>
+          <div class="gap-track"><div class="gap-fill" style="width:12%;background:#EF5350;"></div></div>
+          <div class="gap-status status-gap">● Critical gap — priority needed</div>
+        </div>
+        <div class="gap-item">
+          <div class="gap-item-top"><span class="gap-item-label">Indigenous Knowledge</span><span class="gap-item-pct">8%</span></div>
+          <div class="gap-track"><div class="gap-fill" style="width:8%;background:#EF5350;"></div></div>
+          <div class="gap-status status-gap">● Critical gap — priority needed</div>
+        </div>
+      </div>
+      <div class="gap-summary-cards">
+        <div class="gap-sum-card">
+          <div class="gap-sum-num">5</div>
+          <h4>Recurring Themes</h4>
+          <p>Well-established research areas with consistent output across multiple campuses and years.</p>
+        </div>
+        <div class="gap-sum-card">
+          <div class="gap-sum-num">4</div>
+          <h4>Emerging Themes</h4>
+          <p>Growing areas that have started gaining attention but still lack sufficient depth and breadth.</p>
+        </div>
+        <div class="gap-sum-card" style="border-color:rgba(239,83,80,0.3);">
+          <div class="gap-sum-num" style="color:#EF9A9A;">3</div>
+          <h4>Critical Gaps</h4>
+          <p>Gender Studies, Indigenous Knowledge Systems, and Mental Health are critically underrepresented and recommended as priorities for the next research cycle.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRAMS -->
+<section id="programs">
+  <div class="programs-inner">
+    <div class="center">
+      <div class="section-label">Academic Programs</div>
+      <div class="section-title">Research across all colleges</div>
+      <p class="section-desc">The Atlas covers faculty research from all PSU colleges and degree programs.</p>
+    </div>
+    <div class="prog-grid">
+      <div class="prog-card">
+        <span class="prog-abbr">CAH</span>
+        <h3>College of Arts & Humanities</h3>
+        <ul class="prog-list">
+          <li>BA Communication</li>
+          <li>BA Political Science</li>
+          <li>BS Psychology</li>
+          <li>BS Social Work</li>
+        </ul>
+      </div>
+      <div class="prog-card">
+        <span class="prog-abbr">CCJE</span>
+        <h3>College of Criminal Justice Education</h3>
+        <ul class="prog-list">
+          <li>BS Criminology</li>
+        </ul>
+      </div>
+      <div class="prog-card">
+        <span class="prog-abbr">CHMT</span>
+        <h3>College of Hospitality & Tourism</h3>
+        <ul class="prog-list">
+          <li>BS Hospitality Management</li>
+          <li>BS Tourism Management</li>
+        </ul>
+      </div>
+      <div class="prog-card">
+        <span class="prog-abbr">CNHS</span>
+        <h3>College of Nursing & Health Sciences</h3>
+        <ul class="prog-list">
+          <li>BS Nursing</li>
+          <li>Diploma in Midwifery</li>
+        </ul>
+      </div>
+      <div class="prog-card">
+        <span class="prog-abbr">CEAT</span>
+        <h3>College of Engineering & Architecture</h3>
+        <ul class="prog-list">
+          <li>BS Civil Engineering</li>
+          <li>BS Mechanical Engineering</li>
+          <li>BS Architecture</li>
+        </ul>
+      </div>
+      <div class="prog-card">
+        <span class="prog-abbr">CTE</span>
+        <h3>College of Teacher Education</h3>
+        <ul class="prog-list">
+          <li>B Elementary Education</li>
+          <li>B Physical Education</li>
+          <li>B Secondary Education</li>
+        </ul>
+      </div>
+      <div class="prog-card">
+        <span class="prog-abbr">CS</span>
+        <h3>College of Sciences</h3>
+        <ul class="prog-list">
+          <li>BS Information Technology</li>
+          <li>BS Environmental Science</li>
+          <li>BS Marine Biology</li>
+        </ul>
+      </div>
+      <div class="prog-card">
+        <span class="prog-abbr">CBA</span>
+        <h3>College of Business Administration</h3>
+        <ul class="prog-list">
+          <li>BS Accountancy</li>
+          <li>BS Business Administration</li>
+          <li>BS Public Administration</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="center">
+      <div class="section-label">Get in Touch</div>
+      <div class="section-title">Contact the University Research Office</div>
+      <p class="section-desc">Have questions about the Research Atlas or want to submit your research? Reach out to the URO.</p>
+    </div>
+    <div class="contact-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full name</label>
+          <input type="text" placeholder="Juan dela Cruz" />
+        </div>
+        <div class="form-group">
+          <label>Email address</label>
+          <input type="email" placeholder="you@psu.palawan.edu.ph" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Campus</label>
+          <select>
+            <option>Select campus</option>
+            <option>Puerto Princesa (Main)</option>
+            <option>Aborlan</option>
+            <option>Brooke's Point</option>
+            <option>Coron</option>
+            <option>Cuyo</option>
+            <option>Narra</option>
+            <option>Quezon</option>
+            <option>San Rafael</option>
+            <option>Roxas</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Subject</label>
+          <select>
+            <option>Research Submission</option>
+            <option>Gap Analysis Inquiry</option>
+            <option>System Access</option>
+            <option>General Inquiry</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-full">
+        <div class="form-group">
+          <label>Message</label>
+          <textarea placeholder="Type your message here..."></textarea>
+        </div>
+      </div>
+      <button class="btn-gold" style="width:100%;font-size:15px;padding:14px;">Send Message →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h2>Palawan Research Atlas</h2>
+        <p>A centralized GIS-based thematic research mapping and gap analysis system for Palawan State University — developed as a capstone study.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#classifier">AI Classifier</a></li>
+          <li><a href="#campuses">Campuses</a></li>
+          <li><a href="#gaps">Gap Analysis</a></li>
+          <li><a href="#programs">Programs</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="#">Tiniguiban Heights, Puerto Princesa City</a></li>
+          <li><a href="mailto:uro@psu.palawan.edu.ph">uro@psu.palawan.edu.ph</a></li>
+          <li><a href="#">University Research Office</a></li>
+          <li><a href="https://www.facebook.com/psulibrarypalawan">Facebook</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Palawan Research Atlas — Palawan State University. All rights reserved.</span>
+      <span>Capstone Study — Descriptive-Developmental Design</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function switchPTab(btn, id) {
+  document.querySelectorAll('.ptab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+}
+
+async function classifySingle() {
+  const title = document.getElementById('inp-title').value.trim();
+  const abstract = document.getElementById('inp-abstract').value.trim();
+  if (!title) { alert('Please enter a research title.'); return; }
+  const btn = document.getElementById('btn-single');
+  btn.disabled = true; btn.textContent = 'Classifying...';
+  document.getElementById('result-single').innerHTML = '<div class="loading-row"><div class="spin"></div>Analyzing your research entry...</div>';
+  try {
+    const prompt = `You are a research theme classifier for Palawan State University. Classify the following research into one primary theme, extract 3-5 keywords, and give a confidence score (0-100).
+
+Research Title: ${title}
+${abstract ? 'Abstract: ' + abstract : ''}
+
+Available themes: Environmental Science, Aquatic Sciences, Agriculture, Biodiversity, Health Sciences, Education, Indigenous Knowledge, Gender Studies, Technology, Governance, Economics, Other.
+
+Respond ONLY with a valid JSON object (no markdown, no extra text):
+{"theme":"<theme>","confidence":<number>,"keywords":["<kw1>","<kw2>","<kw3>"],"rationale":"<1-2 sentence reason>"}`;
+
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 400, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await resp.json();
+    const text = data.content.map(i => i.text || '').join('').replace(/```json|```/g,'').trim();
+    const r = JSON.parse(text);
+    const conf = r.confidence;
+    const fillColor = conf >= 75 ? '#2E7D32' : conf >= 50 ? '#F57F17' : '#E24B4A';
+    document.getElementById('result-single').innerHTML = `
+      <div style="border:1px solid #D8E8D0;border-radius:14px;padding:18px;background:#FAFAF7;">
+        <span class="result-badge">${r.theme}</span>
+        <div class="conf-row">
+          <span class="conf-label">Confidence</span>
+          <div class="conf-track"><div class="conf-fill" style="width:${conf}%;background:${fillColor};"></div></div>
+          <span class="conf-pct">${conf}%</span>
+        </div>
+        <p class="rationale-text">${r.rationale}</p>
+        <div class="kw-row">${(r.keywords||[]).map(k=>`<span class="kw">${k}</span>`).join('')}</div>
+      </div>`;
+  } catch(e) {
+    document.getElementById('result-single').innerHTML = '<p style="color:#C62828;font-size:13px;">Classification failed. Please try again.</p>';
+  }
+  btn.disabled = false; btn.textContent = 'Classify Research →';
+}
+
+async function autoClassify() {
+  const samples = [
+    { title: "Assessment of coral reef degradation in El Nido Marine Reserve", abstract: "This study evaluates coral bleaching and anthropogenic impacts on reef ecosystems in El Nido, Palawan." },
+    { title: "Organic farming practices and soil health in Aborlan, Palawan", abstract: "An investigation into composting, crop rotation, and natural pest control among smallholder farmers." },
+    { title: "Digital literacy levels among elementary teachers in rural PSU campuses", abstract: "A survey measuring ICT competency and technology adoption rates among public school teachers in Palawan." },
+    { title: "Traditional healing practices of Palawan indigenous communities", abstract: "An ethnographic study documenting folk medicine and traditional health knowledge among Palawanon tribes." },
+  ];
+  const btn = document.getElementById('btn-batch');
+  btn.disabled = true; btn.textContent = 'Classifying...';
+  document.getElementById('result-batch').innerHTML = '<div class="loading-row"><div class="spin"></div>Running auto-classification on sample entries...</div>';
+  const prompt = `You are a research theme classifier for Palawan State University. Classify each entry.
+
+Themes: Environmental Science, Aquatic Sciences, Agriculture, Biodiversity, Health Sciences, Education, Indigenous Knowledge, Gender Studies, Technology, Governance, Economics, Other.
+
+${samples.map((s,i)=>`${i+1}. Title: ${s.title}\nAbstract: ${s.abstract}`).join('\n\n')}
+
+Respond ONLY with a valid JSON array (no markdown):
+[{"theme":"...","confidence":...,"keywords":["...","..."]},...]`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 600, messages: [{ role: 'user', content: prompt }] })
+    });
+    const data = await resp.json();
+    const text = data.content.map(i => i.text || '').join('').replace(/```json|```/g,'').trim();
+    const results = JSON.parse(text);
+    let html = '<div style="display:flex;flex-direction:column;gap:12px;">';
+    samples.forEach((s,i) => {
+      const r = results[i] || {};
+      const conf = r.confidence || 0;
+      const fillColor = conf >= 75 ? '#2E7D32' : conf >= 50 ? '#F57F17' : '#E24B4A';
+      html += `<div style="border:1px solid #D8E8D0;border-radius:12px;padding:14px;background:#FAFAF7;">
+        <div style="font-size:13px;font-weight:600;color:#1A2215;margin-bottom:8px;">${s.title}</div>
+        <span class="result-badge">${r.theme || 'Unknown'}</span>
+        <div class="conf-row" style="margin-top:8px;">
+          <span class="conf-label">Confidence</span>
+          <div class="conf-track"><div class="conf-fill" style="width:${conf}%;background:${fillColor};"></div></div>
+          <span class="conf-pct">${conf}%</span>
+        </div>
+        <div class="kw-row">${(r.keywords||[]).map(k=>`<span class="kw">${k}</span>`).join('')}</div>
+      </div>`;
+    });
+    html += '</div>';
+    document.getElementById('result-batch').innerHTML = html;
+  } catch(e) {
+    document.getElementById('result-batch').innerHTML = '<p style="color:#C62828;font-size:13px;">Auto-classification failed. Please try again.</p>';
+  }
+  btn.disabled = false; btn.textContent = 'Run Auto-Classification →';
+}
+</script>
+</body>
+</html>
